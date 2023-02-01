@@ -14,7 +14,6 @@
 
 // Execute `rustlings hint hashmaps3` or use the `hint` watch subcommand for a hint.
 
-// I AM NOT DONE
 
 use std::collections::HashMap;
 
@@ -40,8 +39,45 @@ fn build_scores_table(results: String) -> HashMap<String, Team> {
         // will be the number of goals conceded from team_2, and similarly
         // goals scored by team_2 will be the number of goals conceded by
         // team_1.
+        // Option 1
+        // scores
+        //    .entry(String::from(&team_1_name))
+         //   .and_modify(|value| { 
+         //       value.goals_scored += team_1_score;
+         //       value.goals_conceded += team_2_score;
+         //   })
+         //   .or_insert(
+          //      Team {name: String::from(team_1_name), goals_scored: team_1_score, goals_conceded: team_2_score}
+           // );
+        // scores
+           //  .entry(String::from(&team_2_name))
+            // .and_modify(|value| { 
+             //   value.goals_scored += team_2_score;
+             //   value.goals_conceded += team_1_score;
+           // })
+            //.or_insert(
+             //   Team {name: String::from(team_2_name), goals_scored: team_2_score, goals_conceded: team_1_score}
+            // );
+        // Option 2
+        update_goals_or_insert(&mut scores, &team_1_name, team_1_score, team_2_score);
+        update_goals_or_insert(&mut scores, &team_2_name, team_2_score, team_1_score);
+
     }
+
     scores
+}
+
+fn update_goals_or_insert(scores: &mut HashMap<String, Team>, team: &str, scored_goals: u8, conceded_goals: u8) {
+    scores
+        .entry(String::from(team))
+        .and_modify(|value| { 
+            value.goals_scored += scored_goals;
+            value.goals_conceded += conceded_goals;
+        })
+        .or_insert(
+            Team {name: String::from(team), goals_scored: scored_goals, goals_conceded: conceded_goals}
+        );
+
 }
 
 #[cfg(test)]
@@ -50,10 +86,10 @@ mod tests {
 
     fn get_results() -> String {
         let results = "".to_string()
-            + "England,France,4,2\n"
-            + "France,Italy,3,1\n"
-            + "Poland,Spain,2,0\n"
-            + "Germany,England,2,1\n";
+        + "England,France,4,2\n"
+        + "France,Italy,3,1\n"
+        + "Poland,Spain,2,0\n"
+        + "Germany,England,2,1\n";
         results
     }
 
